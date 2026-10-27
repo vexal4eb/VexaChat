@@ -18,7 +18,7 @@ async function redis(commands) {
 }
 
 module.exports = async (req, res) => {
-	if (req.headers["x-key"] !== process.env.CHAT_KEY) {
+	if (process.env.CHAT_KEY && req.headers["x-key"] !== process.env.CHAT_KEY) {
 		return res.status(401).json({ error: "key" });
 	}
 
