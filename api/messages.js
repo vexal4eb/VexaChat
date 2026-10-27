@@ -17,7 +17,7 @@ async function redis(commands) {
 	return results.map((entry) => entry.result);
 }
 
-module.exports = async (req, res) => {
+async function handle(req, res) {
 	if (process.env.CHAT_KEY && req.headers["x-key"] !== process.env.CHAT_KEY) {
 		return res.status(401).json({ error: "key" });
 	}
@@ -78,4 +78,16 @@ module.exports = async (req, res) => {
 	}
 
 	return res.status(405).end();
+}
+
+module.exports = async (req, res) => {
+	if (!base || !token) {
+		return res.status(500).json({ error: "redis env missing" });
+	}
+
+	try {
+		return await handle(req, res);
+	} catch (error) {
+		return res.status(500).json({ error: String(error && error.message || error) });
+	}
 };
