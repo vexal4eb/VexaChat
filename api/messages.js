@@ -89,7 +89,7 @@ function parseCursors(raw) {
 async function push(key, entry) {
 	const [id] = await redis([["INCR", "chat:tick"]]);
 	await redis([
-		["LPUSH", key, JSON.stringify({ id, ...entry })],
+		["LPUSH", key, JSON.stringify({ id, ts: Math.floor(Date.now() / 1000), ...entry })],
 		["LTRIM", key, 0, KEEP - 1],
 	]);
 }
